@@ -1,0 +1,127 @@
+# =========================================
+# Xcode
+# =========================================
+## Пользовательские настройки Xcode (специфичны для машины разработчика)
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+## Билды и производные данные
+build/
+DerivedData/
+*.moved-aside
+*.o
+*.LinkFileList
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Логи и временные файлы
+*.xcbkptlist
+*.log
+
+## Playground
+timeline.xctimeline
+playground.xcworkspace
+
+# =========================================
+# Swift Package Manager
+# =========================================
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# Если пакет — библиотека с зафиксированными зависимостями (редко для приложений),
+# Package.resolved можно закоммитить — тогда раскомментируйте строку ниже
+# !Package.resolved
+
+# =========================================
+# CocoaPods (если используется вместо/вместе с SPM)
+# =========================================
+Pods/
+# Podfile.lock обычно коммитят, чтобы зафиксировать версии — не игнорируем
+
+# =========================================
+# Carthage (если используется)
+# =========================================
+Carthage/Build/
+Carthage/Checkouts/
+
+# =========================================
+# fastlane
+# =========================================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# =========================================
+# Firebase
+# =========================================
+# GoogleService-Info.plist НЕ содержит секретных ключей (это публичный клиентский
+# конфиг, защита — через Firestore Security Rules и App Check), поэтому его
+# обычно КОММИТЯТ в репозиторий, чтобы у всей команды сборка работала из коробки.
+# Игнорируйте его только если у вас разные окружения (dev/staging/prod) и файлы
+# подкладываются CI/скриптом — тогда раскомментируйте:
+# GoogleService-Info.plist
+# GoogleService-Info-*.plist
+
+# Файлы сервисного аккаунта Firebase Admin SDK — вот это ДЕЙСТВИТЕЛЬНО секрет,
+# никогда не должно попадать в git
+*firebase-adminsdk*.json
+serviceAccountKey.json
+
+# Локальный конфиг Firebase CLI / эмулятора
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firebase-export-*/
+
+# =========================================
+# Тестирование (XCTest / XCUITest)
+# =========================================
+*.xcresult
+TestResults/
+*.xccovreport
+*.profdata
+*.profraw
+
+# Snapshot-тестирование (например, swift-snapshot-testing):
+# папки __Snapshots__/ с эталонными изображениями — это НЕ мусор, а часть тестов,
+# их обязательно коммитим. Здесь намеренно ничего не игнорируется.
+
+# =========================================
+# Core Data / SwiftData
+# =========================================
+# .xcdatamodeld, версии внутри него (.xcdatamodel) и .xccurrentversion —
+# это исходный код схемы данных, коммитим как обычные файлы, НЕ игнорируем.
+# Скомпилированный .momd — артефакт сборки, уже покрыт правилом DerivedData/ выше.
+
+# Локальные SQLite-хранилища Core Data / SwiftData — в реальном приложении они
+# создаются в Application Support на устройстве, а не в репозитории, но если
+# в проекте есть консольные target'ы/скрипты, которые кладут стор рядом с кодом
+# для отладки — на всякий случай игнорируем:
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.store
+
+# =========================================
+# macOS
+# =========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================================
+# Прочее / IDE
+# =========================================
+*.swp
+*~.nib
+.vscode/
+.idea/
