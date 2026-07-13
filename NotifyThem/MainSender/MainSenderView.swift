@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct MainSenderView: View {
     @StateObject private var viewModel = MainSenderViewModel()
@@ -61,6 +62,10 @@ struct MainSenderView: View {
 //                    OutgoingMessageView(viewModel: viewModel, group: group)
                     OutgoingMessageView(viewModel: viewModel, groupID: group.id)
                 }
+                // код для вызова проверки наличия соединения с Firebase
+//                .task {
+//                    await testConnection()
+//                }
 
                 .toolbar {
                     Button("Add Group", systemImage: "plus.circle") {
@@ -128,6 +133,18 @@ struct MainSenderView: View {
     private func deleteGroup(_ group: ReceiverGroup) {
         viewModel.deleteReceiverGroup(group)
     }
+
+    // код для вызова проверки наличия соединения с Firebase
+//    func testConnection() async {
+//        let db = Firestore.firestore()
+//        do {
+//            try await db.collection("_ping").document("test").setData(["ok": true])
+//            let snapshot = try await db.collection("_ping").document("test").getDocument()
+//            print("Firestore связь работает:", snapshot.data() ?? [:])
+//        } catch {
+//            print("Ошибка подключения к Firestore:", error)
+//        }
+//    }
 }
 
 #Preview {
