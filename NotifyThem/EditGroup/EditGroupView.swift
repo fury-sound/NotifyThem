@@ -8,26 +8,27 @@
 import SwiftUI
 
 struct EditGroupView: View {
-//    @ObservedObject var viewModel: MainSenderViewModel
+    //    @ObservedObject var viewModel: MainSenderViewModel
     @State var editedGroup: ReceiverGroup
     @Environment(\.dismiss) var dismiss
     let receiverList: [Receiver]
     let onSaveGroup: (ReceiverGroup) -> Void
-//    let onAddGroup: (String) -> Void
+    //    let onAddGroup: (String) -> Void
     var availableReceivers: [Receiver] {
-        receiverList.filter { receiver in
+        return receiverList.filter { receiver in
             !editedGroup.receivers.contains { $0.id == receiver.id }
         }
     }
 
     init(
-        receiverList: [Receiver],
-        group: ReceiverGroup,
-        onSave: @escaping (ReceiverGroup) -> Void
+    receiverList: [Receiver],
+    group: ReceiverGroup,
+    onSave: @escaping (ReceiverGroup) -> Void
     ) {
         self.receiverList = receiverList
         _editedGroup = State(initialValue: group)
         self.onSaveGroup = onSave
+//        print("editedGroup.receivers.count", editedGroup.receivers.count)
     }
 
     var body: some View {
@@ -41,10 +42,11 @@ struct EditGroupView: View {
                 } else {
                     ForEach(editedGroup.receivers) { receiver in
                         Label(receiver.name, systemImage: "person.fill")
+//                        Text(editedGroup.receivers.map { "\($0.id). \($0.name)" }.joined(separator: ", "))
                     }
                     .onDelete { indexSet in
                         editedGroup.receivers.remove(atOffsets: indexSet)
-                        print(editedGroup.receivers)
+//                        print("in EditGroupView - editedGroup.receivers", editedGroup.receivers)
                     }
                 }
             }
@@ -73,6 +75,10 @@ struct EditGroupView: View {
         }
         .navigationTitle("Edit Group")
         .navigationBarTitleDisplayMode(.inline)
+//        .onAppear() {
+//            print("On Appear receiverList", receiverList.map(\.name))
+//            print("On Appear availableReceivers", availableReceivers.map(\.name))
+//        }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
@@ -103,7 +109,7 @@ struct EditGroupView: View {
                 id: 111,
                 name: "Friends", messageGroup:  MessageGroup(messageArray: messageGroupName1, dateCreated: Date.now),
                 receivers: []
-//                receivers: [receiver1, receiver2]
+                //                receivers: [receiver1, receiver2]
             ),
             onSave: { updatedGroup in
                 print("New Group Name:", updatedGroup.name)

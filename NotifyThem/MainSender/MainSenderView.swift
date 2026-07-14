@@ -9,9 +9,10 @@ import SwiftUI
 import FirebaseFirestore
 
 struct MainSenderView: View {
-    @StateObject private var viewModel = MainSenderViewModel()
+    //    @StateObject private var viewModel = MainSenderViewModel()
+    @EnvironmentObject private var viewModel: MainSenderViewModel
     @State private var editingGroup: ReceiverGroup?
-//    @State private var creatingGroup: ReceiverGroup?
+    //    @State private var creatingGroup: ReceiverGroup?
     @State private var isAddingGroup: Bool = false
     @State private var newGroupName: String = ""
 
@@ -44,14 +45,16 @@ struct MainSenderView: View {
                             }
                             .tint(.blue)
                         }
-//                        Text(group.receivers.map(\.name).joined(separator: ", "))
-//                        Text(group.messageGroup.messageArray.map(\.message).joined(separator: ", "))
+                        //                        Text(group.receivers.map(\.name).joined(separator: ", "))
+                        //                        Text(group.messageGroup.messageArray.map(\.message).joined(separator: ", "))
                     }
                 }
                 .sheet(item: $editingGroup) { group in
                     NavigationStack {
                         EditGroupView(receiverList: viewModel.receiverList, group: group) { updatedGroup in
                             //                            viewModel.editedGroupId = group.id
+                            //                            print("No of receivers in group:", updatedGroup.receivers.count)
+                            //                            print("Saving receivers:", updatedGroup.receivers.map(\.id))
                             viewModel.updateReceiverGroup(group: updatedGroup)
                         }
                     }
@@ -59,13 +62,13 @@ struct MainSenderView: View {
                 }
                 .navigationDestination(for: ReceiverGroup.self) { group in
                     //                    DestinationView(group: group)
-//                    OutgoingMessageView(viewModel: viewModel, group: group)
+                    //                    OutgoingMessageView(viewModel: viewModel, group: group)
                     OutgoingMessageView(viewModel: viewModel, groupID: group.id)
                 }
                 // код для вызова проверки наличия соединения с Firebase
-//                .task {
-//                    await testConnection()
-//                }
+                //                .task {
+                //                    await testConnection()
+                //                }
 
                 .toolbar {
                     Button("Add Group", systemImage: "plus.circle") {
@@ -86,7 +89,8 @@ struct MainSenderView: View {
                 .navigationBarTitleDisplayMode(.inline)
 
                 NavigationLink {
-                    ReceiverView(viewModel: viewModel)
+                    ReceiverView()
+                    //                    ReceiverView(viewModel: viewModel)
                 } label: {
                     Label("Students", systemImage: "person.3.fill")
                         .frame(maxWidth: .infinity)
@@ -123,42 +127,55 @@ struct MainSenderView: View {
 
             }
             .padding()
+            .alert(
+                "App Error",
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { isPresented in
+                        if !isPresented { viewModel.errorMessage = nil }
+                    }
+                )
+            ) {
+                Button("OK", role: .cancel ) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
         }
     }
-    private func addGroup() {
-        print("Add Button tapped")
-        //        viewModel.receiverGroup1.name = "New Group"
-    }
+    //    private func addGroup() {
+    //        print("Add Button tapped")
+    //        //        viewModel.receiverGroup1.name = "New Group"
+    //    }
 
     private func deleteGroup(_ group: ReceiverGroup) {
         viewModel.deleteReceiverGroup(group)
     }
 
     // код для вызова проверки наличия соединения с Firebase
-//    func testConnection() async {
-//        let db = Firestore.firestore()
-//        do {
-//            try await db.collection("_ping").document("test").setData(["ok": true])
-//            let snapshot = try await db.collection("_ping").document("test").getDocument()
-//            print("Firestore связь работает:", snapshot.data() ?? [:])
-//        } catch {
-//            print("Ошибка подключения к Firestore:", error)
-//        }
-//    }
+    //    func testConnection() async {
+    //        let db = Firestore.firestore()
+    //        do {
+    //            try await db.collection("_ping").document("test").setData(["ok": true])
+    //            let snapshot = try await db.collection("_ping").document("test").getDocument()
+    //            print("Firestore связь работает:", snapshot.data() ?? [:])
+    //        } catch {
+    //            print("Ошибка подключения к Firestore:", error)
+    //        }
+    //    }
 }
 
 #Preview {
     MainSenderView()
 }
 
-struct DestinationView: View {
-    @State var group: ReceiverGroup
-
-    var body: some View {
-        Image(systemName: "globe")
-            .imageScale(.large)
-            .foregroundStyle(.tint)
-        Text(group.name)
-            .padding()
-    }
-}
+//struct DestinationView: View {
+//    @State var group: ReceiverGroup
+//
+//    var body: some View {
+//        Image(systemName: "globe")
+//            .imageScale(.large)
+//            .foregroundStyle(.tint)
+//        Text(group.name)
+//            .padding()
+//    }
+//}

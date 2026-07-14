@@ -9,7 +9,8 @@ import SwiftUI
 import Combine
 
 struct ReceiverView: View {
-    @ObservedObject var viewModel: MainSenderViewModel
+//    @ObservedObject var viewModel: MainSenderViewModel
+    @EnvironmentObject private var viewModel: MainSenderViewModel
     @State private var editingPerson: Receiver?
     @State private var isAddingPerson: Bool = false
 
@@ -62,7 +63,7 @@ struct ReceiverView: View {
                     .sheet(isPresented: $isAddingPerson) {
                         NavigationStack {
                             AddPersonView { personName in
-                                print("New person: \(personName)")
+//                                print("New person: \(personName)")
                                 viewModel.addNewReceiver(personName)
                             }
                         }
@@ -91,8 +92,8 @@ struct ReceiverView: View {
 }
 
 #Preview {
-    let viewModel = MainSenderViewModel()
-    ReceiverView(viewModel: viewModel)
+//    let viewModel = MainSenderViewModel()
+    ReceiverView()
 }
 
 

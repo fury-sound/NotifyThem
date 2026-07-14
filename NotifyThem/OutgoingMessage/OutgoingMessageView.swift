@@ -92,6 +92,7 @@ struct OutgoingMessageView: View {
                 //                group.messageGroup.messageArray.append(newMessageCore)
                 //                viewModel.addNewMessage(shownMessage, to: group.id)
                 viewModel.addNewMessage(shownMessage, to: groupID)
+                
                 shownMessage = ""
             }
         //            .task {

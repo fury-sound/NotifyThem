@@ -10,17 +10,18 @@ import FirebaseCore
 
 @main
 struct NotifyThemApp: App {
+    @StateObject private var senderViewModel = MainSenderViewModel()
 
     init() {
         FirebaseApp.configure()
     }
 
     var body: some Scene {
-
         WindowGroup {
 //            ContentView()
             MainSenderView()
-                .environmentObject(MainSenderViewModel())
+                .environmentObject(senderViewModel)
+//                .environmentObject(MainSenderViewModel())
         }
     }
 }
