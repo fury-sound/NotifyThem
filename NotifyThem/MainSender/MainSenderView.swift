@@ -63,7 +63,7 @@ struct MainSenderView: View {
                 .navigationDestination(for: ReceiverGroup.self) { group in
                     //                    DestinationView(group: group)
                     //                    OutgoingMessageView(viewModel: viewModel, group: group)
-                    OutgoingMessageView(viewModel: viewModel, groupID: group.id)
+                    OutgoingMessageView(groupID: group.id)
                 }
                 // код для вызова проверки наличия соединения с Firebase
                 //                .task {
@@ -166,6 +166,7 @@ struct MainSenderView: View {
 
 #Preview {
     MainSenderView()
+        .environmentObject(MainSenderViewModel())
 }
 
 //struct DestinationView: View {

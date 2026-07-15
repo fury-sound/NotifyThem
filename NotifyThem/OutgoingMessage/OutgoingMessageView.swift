@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OutgoingMessageView: View {
     //    @StateObject private var viewModel = OutgoingMessageViewModel()
-    @ObservedObject var viewModel: MainSenderViewModel
+    @EnvironmentObject private var viewModel: MainSenderViewModel
     @State private var shownMessage: String = ""
     //    @State var group: ReceiverGroup
     let groupID: UInt

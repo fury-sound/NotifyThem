@@ -161,7 +161,8 @@ final class FirestoreService {
         )
         // документ записывается в подколлекцию messageGroups/{groupID}/messages/{id}
         // id сообщения используется как id документа
-        try await db.collection("messageGroups").document(String(groupID)).collection("messages").document(String(message.id)).setDataAsync(from: dto)
+        let query = db.collection("messageGroups").document(String(groupID)).collection("messages").document(String(message.id))
+        try await query.setDataAsync(from: dto)
     }
 
     func fetchReceiverGroups() async throws -> [ReceiverGroup] {
@@ -186,10 +187,6 @@ final class FirestoreService {
         }
         return result
     }
-
-
-    // MARK: - MessageGroups
-
 }
 
 private extension Array {
@@ -216,4 +213,24 @@ extension DocumentReference {
             }
         }
     }
+}
+
+// MARK: - functions for receivers
+
+extension FirestoreService {
+    func findReceivers(byName name: String) async throws -> [Receiver] {
+        let query = db.collection("receivers")
+        let snapshot = try await query.whereField("name", isEqualTo: name).getDocuments()
+        return try snapshot.documents.map { document in
+            let dto = try document.data(as: ReceiverDTO.self)
+            return Receiver(id: UInt(dto.id), name: dto.name)
+        }
+    }
+
+    func fetchGroups (forReceiverID receiverID: UInt) async throws -> [ReceiverGroupDTO] {
+        let query = db.collection("receiverGroups")
+        let snapshot = try await query.whereField("receiverIds", arrayContains: Int(receiverID)).getDocuments()
+        return try snapshot.documents.map { try $0.data(as: ReceiverGroupDTO.self) }
+    }
+
 }
