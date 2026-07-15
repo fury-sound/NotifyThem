@@ -28,7 +28,7 @@ struct AddPersonView: View {
                 }
                 .tint(.blue)
                 .buttonStyle(.borderedProminent)
-                .disabled(newReceiverName.isEmpty ? true : false)
+                .disabled(newReceiverName.isEmpty)
             }
         }
     }

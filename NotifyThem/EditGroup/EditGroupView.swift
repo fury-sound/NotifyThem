@@ -87,7 +87,7 @@ struct EditGroupView: View {
                 }
                 .tint(.blue)
                 .buttonStyle(.borderedProminent)
-                .disabled(editedGroup.name.isEmpty ? true : false)
+                .disabled(editedGroup.name.isEmpty)
             }
         }
     }

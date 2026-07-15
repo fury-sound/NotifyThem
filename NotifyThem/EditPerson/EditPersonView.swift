@@ -37,7 +37,7 @@ struct EditPersonView: View {
                 }
                 .tint(.blue)
                 .buttonStyle(.borderedProminent)
-                .disabled(editedReceiver.name.isEmpty ? true : false)
+                .disabled(editedReceiver.name.isEmpty)
             }
         }
     }

@@ -19,6 +19,7 @@ struct NotifyThemApp: App {
     var body: some Scene {
         WindowGroup {
 //            ContentView()
+//            MainReceiverView()
             MainSenderView()
                 .environmentObject(senderViewModel)
 //                .environmentObject(MainSenderViewModel())

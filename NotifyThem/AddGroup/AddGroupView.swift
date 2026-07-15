@@ -28,7 +28,7 @@ struct AddGroupView: View {
                 }
                 .tint(.blue)
                 .buttonStyle(.borderedProminent)
-                .disabled(newGroupName.isEmpty ? true : false)
+                .disabled(newGroupName.isEmpty)
             }
         }
     }
