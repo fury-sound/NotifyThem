@@ -9,18 +9,8 @@ import SwiftUI
 
 struct EditReceiverView: View {
     @Environment(\.dismiss) var dismiss
-//    @Binding var name: String
     @State var editedName: String
     let onEditName: (String) -> Void
-
-//    init(
-//        name: String,
-//        onSave: @escaping (String) -> Void
-//    ) {
-//        _editedName = State(initialValue: name)
-//        self.onEditName = onSave
-//        //        print("editedGroup.receivers.count", editedGroup.receivers.count)
-//    }
 
     var body: some View {
         Form {

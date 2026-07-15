@@ -8,13 +8,20 @@
 import SwiftUI
 
 struct OutgoingMessageView: View {
-    //    @StateObject private var viewModel = OutgoingMessageViewModel()
     @EnvironmentObject private var viewModel: MainSenderViewModel
     @State private var shownMessage: String = ""
-    //    @State var group: ReceiverGroup
     let groupID: UInt
     var group: ReceiverGroup? {
         viewModel.receiverGroupList.first { $0.id == groupID }
+    }
+    private var lastMessage: MessageCore? {
+        group?.messageGroup.messageArray.first
+    }
+    private var messageToShow: String {
+        lastMessage?.message ?? "No messages in the group"
+    }
+    private var messageArrayHistory: [MessageCore] {
+        group?.messageGroup.messageArray ?? []
     }
 
     var body: some View {
@@ -24,13 +31,10 @@ struct OutgoingMessageView: View {
                 .font(.title)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            let lastMessage = group?.messageGroup.messageArray.first
             let dateFormattedShown = viewModel.dateFormatted(date: lastMessage?.date ?? Date())
             Text("\(dateFormattedShown)")
                 .font(.headline)
 
-            //                Text("\(viewModel.messageCurrent)")
-            let messageToShow = lastMessage?.message ?? "No messages in the group"
             Text(messageToShow)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(8)
@@ -38,7 +42,6 @@ struct OutgoingMessageView: View {
                 .background(Color.blue.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
-            let messageArrayHistory = group?.messageGroup.messageArray ?? []
             Form {
                 Section("Message History") {
                     if messageArrayHistory.isEmpty {
@@ -60,53 +63,35 @@ struct OutgoingMessageView: View {
                             .padding(8)
                             .background(.blue.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
-//                            Label(message.message, systemImage: "tray.full")
-//                                .font(.body)
                         }
-                        //                        .onDelete { indexSet in
-                        //                            editedGroup.receivers.remove(atOffsets: indexSet)
-                        //                            print(editedGroup.receivers)
-                        //                        }
                     }
                 }
             }
+            Spacer()
+            TextField("Enter message", text: $shownMessage)
+                .padding(8)
+                .textFieldStyle(.roundedBorder)
+                .multilineTextAlignment(.leading)
+                .submitLabel(.send)
+                .foregroundStyle(.tint)
+
+                .onSubmit {
+                    viewModel.addNewMessage(shownMessage, to: groupID)
+                    shownMessage = ""
+                }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 12)
         .navigationBarTitle("Message to send")
         .navigationBarTitleDisplayMode(.inline)
-        Spacer()
-        TextField("Enter message", text: $shownMessage)
-            .padding(8)
-            .textFieldStyle(.roundedBorder)
-            .multilineTextAlignment(.leading)
-            .submitLabel(.send)
-            .foregroundStyle(.tint)
 
-            .onSubmit {
-                let previousMessage = group?.messageGroup.messageArray.first?.message ?? "No previous messages in the group"
-                print("Предыдущий текст: \(previousMessage)")
-                //                print("Предыдущий текст: \(viewModel.messageCurrent)")
-                //                viewModel.messageCurrent = shownMessage
-                //                let newMessageCore = MessageCore(id: 222, message: shownMessage, senderID: 1, date: Date(), wasReceived: false)
-                //                group.messageGroup.messageArray.append(newMessageCore)
-                //                viewModel.addNewMessage(shownMessage, to: group.id)
-                viewModel.addNewMessage(shownMessage, to: groupID)
-                
-                shownMessage = ""
-            }
-        //            .task {
-        //                viewModel.loadLastMessage(group: viewModel.group(by: group.id).messageGroup)
-        //                viewModel.loadLastMessage(group: group?.messageGroup)
-        //                print("group.receivers", group.receivers)
-        //            }
     }
 }
 
 
-
-//#Preview {
-//    NavigationStack {
-//        OutgoingMessageView(group: .preview)
-//    }
-//}
+#Preview {
+    NavigationStack {
+        OutgoingMessageView(groupID: 1)
+            .environmentObject(MainSenderViewModel())
+    }
+}

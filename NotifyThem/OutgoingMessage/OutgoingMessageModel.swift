@@ -8,7 +8,6 @@
 import Foundation
 
 struct MessageCore: Codable, Identifiable, Hashable {
-    //    let id: UUID
     let id: UInt
     let message: String
     let senderID: UInt?

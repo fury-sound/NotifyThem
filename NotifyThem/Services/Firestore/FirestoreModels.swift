@@ -10,7 +10,6 @@ import FirebaseFirestore
 struct ReceiverDTO: Codable {
     let id: Int
     var name: String
-//    let email: String
 }
 
 struct ReceiverGroupDTO: Codable {

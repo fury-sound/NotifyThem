@@ -10,7 +10,6 @@ import SwiftUI
 struct EditPersonView: View {
     @EnvironmentObject private var viewModel: MainSenderViewModel
     @Environment(\.dismiss) var dismiss
-//    @State private var editedPersonName: String = ""
     private let originalReceiver: Receiver
     @State private var name: String
     @State private var showDuplicateAlert: Bool = false
@@ -84,13 +83,3 @@ struct EditPersonView: View {
         )
     }
 }
-
-//struct EditPersonView: View {
-//    var body: some View {
-//        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-//    }
-//}
-//
-//#Preview {
-//    EditPersonView()
-//}

@@ -12,7 +12,7 @@ enum FirestoreError: Error {
     var errorDescription: String? {
         switch self {
             case .invalidDocumentId(let id):
-                return "Повреждённые данные: Невалидный ID документа: \(id)"
+                return "Damaged data: Invalid document ID: \(id)"
         }
     }
 }
@@ -31,19 +31,6 @@ final class FirestoreService {
             let dto = try document.data(as: ReceiverDTO.self)
             return Receiver(id: UInt(dto.id), name: dto.name)
         }
-//        return try snapshot.documents.map { document in
-//            let dto = try document.data(as: ReceiverDTO.self)
-//            guard let id = UInt(dto.id) else {
-////                throw FirestoreError.invalidDocumentId(document.documentID)
-//            }
-//        return try snapshot.documents.compactMap { document in
-//            let dto = try document.data(as: ReceiverDTO.self)
-//            guard let id = UInt(dto.id) else {
-//                print("⚠️ Невалидный ID в документе: \(dto.id)")
-//                return nil
-//            }
-//            return Receiver(id: id, name: dto.name)
-//        }
     }
 
     func addReceiver(_ receiver: Receiver) async throws {
@@ -69,22 +56,13 @@ final class FirestoreService {
         guard !ids.isEmpty else { return [] }
         var result: [Receiver] = []
         for chunk in ids.chunked(into: 30) {
-//            print("chunk.count", chunk.count)
             let snapshot = try await db.collection("receivers")
                 .whereField("id", in: chunk)
                 .getDocuments()
-            // temp
-//            print("in fetchReceivers - snapshot.documents.count", snapshot.documents.count)
-//            for document in snapshot.documents {
-//                print(document.documentID)
-//                print(document.data())
-//            }
-            // end temp
             result += try snapshot.documents.map { document -> Receiver in
                 let dto = try document.data(as: ReceiverDTO.self)
                 return Receiver(id: UInt(dto.id), name: dto.name)
             }
-//            print("in fetchReceivers - result.count", result.count)
         }
         return result
     }
@@ -106,7 +84,6 @@ final class FirestoreService {
     }
 
     func deleteReceiverGroup(id: UInt) async throws {
-        print("3. In deleteReceiverGroup")
         let groupRef = db.collection("receiverGroups").document(String(id))
         let messageGroupRef = db.collection("messageGroups").document(String(id))
         let messageSnapshot = try await messageGroupRef.collection("messages").getDocuments()
@@ -118,7 +95,6 @@ final class FirestoreService {
         batch.deleteDocument(groupRef)
         batch.deleteDocument(messageGroupRef)
         try await batch.commit()
-//        print("3. In deleteReceiverGroup", try? await fetchReceiverGroups().map { "\($0.id). \($0.name)" }.joined(separator: ", "))
     }
 
     func fetchReceiverGroupsRaw() async throws -> [ReceiverGroupDTO] {
@@ -172,11 +148,6 @@ final class FirestoreService {
             async let receivers = fetchReceivers(withIDs: dto.receiverIds)
             async let messages = fetchMessages(groupID: UInt(dto.id))
             async let messageGroupSnapshot = db.collection("messageGroups").document(String(dto.id)).getDocument()
-//            print("dto in fetchReceiverGroups", dto.id, "\(type(of: dto.id))", dto.name)
-//            print("dto.receiverIds in fetchReceiverGroups", dto.receiverIds)
-//            print("in fetchReceiverGroups receivers.count", try? receivers.count, try? receivers.first?.id, try? receivers.first?.name)
-//            print("messages.count", messages.count)
-//            print("messageGroupSnapshot.count", messageGroupSnapshot.)
             let messageGroupDTO = try await messageGroupSnapshot.data(as: MessageGroupDTO.self)
             let messageGroup = MessageGroup(
                 messageArray: try await messages, dateCreated: messageGroupDTO.dateCreated

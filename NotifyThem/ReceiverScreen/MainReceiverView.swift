@@ -9,9 +9,6 @@ import SwiftUI
 
 struct MainReceiverView: View {
     @StateObject private var viewModel = MainReceiverViewModel()
-//    let messages: [MessageCore]
-//    @State private var receiverName: String = "Receiver name"
-//    @Binding private var receiverName: String = "Receiver name"
     @State private var isChangingName: Bool = false
     @State private var shownMessage: String = ""
 
@@ -29,10 +26,7 @@ struct MainReceiverView: View {
                 .sheet(isPresented: $isChangingName) {
                     NavigationStack {
                         EditReceiverView(editedName: viewModel.currentReceiverName) { newName in
-//                            self.receiverName = newName
                             viewModel.setCurrentReceiverName(newName)
-//                            print("self.receiverName", self.receiverName)
-                            print("self.receiverName", viewModel.currentReceiverName)
                             Task { await viewModel.loadMessages() }
                         }
                     }
@@ -85,9 +79,7 @@ struct MainReceiverView: View {
                 }
             }
             Button {
-//                print("Reload messages")
                 Task { await viewModel.loadMessages() }
-                //                    ReceiverView(viewModel: viewModel)
             } label: {
                 Label("Load messages", systemImage: "tray.and.arrow.down")
                     .frame(maxWidth: .infinity)
@@ -110,33 +102,11 @@ struct MainReceiverView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .task {
-//            self.receiverName = viewModel.getCurrentReceiverName()
             await viewModel.loadMessages()
-//            print("current receiver name in viewModel:", viewModel.currentReceiverName)
-//            self.receiverName = viewModel.getCurrentReceiverName()
-//            await viewModel.loadMessages()
-//            print("receiverName", receiverName)
         }
     }
 }
 
 #Preview("messages") {
-//    let message1 = MessageCore(id: 1, message: "Homework 1", senderID: 1, date: Date(), wasReceived: false)
-//    let message2 = MessageCore(id: 2, message: "Homework 2", senderID: 1, date: Date(), wasReceived: true)
-//    let message3 = MessageCore(id: 3, message: "Homework 3", senderID: 1, date: Date(), wasReceived: false)
-//    let message4 = MessageCore(id: 4, message: "Homework 4", senderID: 1, date: Date(), wasReceived: true)
-//    let messageGroupName = [message1, message2, message3]
-//    let messageGroupName2 = [message2, message3, message4]
-//    let messageGroupName3 = [message3, message4]
-//    let messageGroup1 = MessageGroup(messageArray: messageGroupName1, dateCreated: Date.now)
-//    MainReceiverView(messages: messageGroupName)
     MainReceiverView()
 }
-
-//#Preview("no messages") {
-//    let messageGroupName: [MessageCore] = []
-////    let messageGroupName2 = [message2, message3, message4]
-////    let messageGroupName3 = [message3, message4]
-////    let messageGroup1 = MessageGroup(messageArray: messageGroupName1, dateCreated: Date.now)
-//    MainReceiverView()
-//}
