@@ -48,8 +48,8 @@ struct ReceiverView: View {
             }
             .sheet(item: $editingPerson) { receiver in
                 NavigationStack {
-                    EditPersonView(receiver: receiver) { updatedPerson in
-                        viewModel.updateReceiver(updatedPerson)
+                    EditPersonView(receiver: receiver) { updatedPersonName in
+                        viewModel.updateReceiver(updatedPersonName)
                     }
                 }
                 .presentationDetents([.medium, .large])
@@ -67,8 +67,8 @@ struct ReceiverView: View {
                                 viewModel.addNewReceiver(personName)
                             }
                         }
+                        .presentationDetents([.medium, .large])
                     }
-                    .presentationDetents([.medium, .large])
             }
         }
         .navigationTitle("Member List")
@@ -94,6 +94,7 @@ struct ReceiverView: View {
 #Preview {
 //    let viewModel = MainSenderViewModel()
     ReceiverView()
+        .environmentObject(MainSenderViewModel())
 }
 
 

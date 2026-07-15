@@ -82,8 +82,8 @@ struct MainSenderView: View {
                                 viewModel.addNewReceiverGroup(groupName)
                             }
                         }
+                        .presentationDetents([.medium, .large])
                     }
-                    .presentationDetents([.medium, .large])
                 }
                 .navigationTitle("Groups")
                 .navigationBarTitleDisplayMode(.inline)

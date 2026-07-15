@@ -232,5 +232,41 @@ extension FirestoreService {
         let snapshot = try await query.whereField("receiverIds", arrayContains: Int(receiverID)).getDocuments()
         return try snapshot.documents.map { try $0.data(as: ReceiverGroupDTO.self) }
     }
+}
 
+// MARK: - name uniqueness check
+
+extension FirestoreService {
+    func receiverNameExists(_ name: String, excludingID: UInt? = nil) async throws -> Bool {
+        // limit(to: 2) достаточно: documentID уникален, значит из
+        // двух документов максимум один может совпасть с excludingID —
+        // если пришло 2 документа, хотя бы один точно "чужой"
+        let snapshot = try await db.collection("receivers")
+            .whereField("name", isEqualTo: name)
+            .limit(to: 2)
+            .getDocuments()
+
+        return snapshot.documents.contains { document in
+            if let excludingID {
+                return document.documentID != String(excludingID)
+            }
+            return true
+        }
+    }
+
+    func groupNameExists(_ name: String, excludingID: UInt? = nil) async throws -> Bool {
+        // тот же принцип: limit(to: 2) достаточно, чтобы найти "чужого" совпаденца,
+        // не читая все документы с этим именем
+        let snapshot = try await db.collection("receiverGroups")
+            .whereField("name", isEqualTo: name)
+            .limit(to: 2)
+            .getDocuments()
+
+        return snapshot.documents.contains { document in
+            if let excludingID {
+                return document.documentID != String(excludingID)
+            }
+            return true
+        }
+    }
 }
