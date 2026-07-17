@@ -14,7 +14,7 @@ struct NotifyThemApp: App {
     @StateObject private var senderViewModel = MainSenderViewModel()
 
     init() {
-//        hasCompletedOnboarding = false
+        hasCompletedOnboarding = false
         FirebaseApp.configure()
     }
 

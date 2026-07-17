@@ -8,12 +8,19 @@
 import SwiftUI
 import Combine
 
+enum LoadingState: Equatable {
+    case loading
+    case loaded
+    case failed
+}
+
 @MainActor
 final class MainSenderViewModel: ObservableObject {
     @Published var wasRead: Bool = false
     @Published var receiverGroupList: [ReceiverGroup] = []
     @Published var receiverList: [Receiver] = []
     @Published var errorMessage: String?
+    @Published private(set) var loadingState: LoadingState = .loading
     private let firestoreService = FirestoreService.shared
     private let currentSender = LocalSenderStore.shared.load()
 
@@ -31,12 +38,15 @@ final class MainSenderViewModel: ObservableObject {
     }
 
     func loadInitialData() async {
+        loadingState = .loading
         do {
             async let groups = firestoreService.fetchReceiverGroups()
             async let receivers = firestoreService.fetchReceivers()
             receiverGroupList = try await groups
             receiverList = try await receivers
+            loadingState = .loaded
         } catch {
+            loadingState = .failed
             errorMessage = "Loading data error: \(error.localizedDescription)"
             print("\(errorMessage ?? "Unknown error")")
         }

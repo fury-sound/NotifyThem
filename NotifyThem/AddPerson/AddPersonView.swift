@@ -33,7 +33,7 @@ struct AddPersonView: View {
 
     var body: some View {
         Form {
-            Section("Person Name") {
+            Section(.personName) {
                 TextField("Enter new person name", text: $newReceiverName)
             }
         }

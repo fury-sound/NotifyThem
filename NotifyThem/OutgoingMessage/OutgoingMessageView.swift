@@ -84,7 +84,6 @@ struct OutgoingMessageView: View {
         .padding(.vertical, 12)
         .navigationBarTitle("Message to send")
         .navigationBarTitleDisplayMode(.inline)
-
     }
 }
 

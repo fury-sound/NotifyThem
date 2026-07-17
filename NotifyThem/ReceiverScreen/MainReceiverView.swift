@@ -9,31 +9,94 @@ import SwiftUI
 
 struct MainReceiverView: View {
     @StateObject private var viewModel = MainReceiverViewModel()
+    //    @State private var isChangingName: Bool = false
+    //    @State private var shownMessage: String = ""
+
+    var body: some View {
+        VStack {
+            MainReceiverHeaderView(viewModel: viewModel)
+            MainReceiverContentView(viewModel: viewModel)
+
+//            switch viewModel.loadingState {
+//                case .loading:
+//                    ProgressView("Loading messages...")
+//                        .font(.title)
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//
+//                case .failed:
+//                    LoadingErrorView(
+//                        title: "Unable to load data",
+//                        systemImage: "wifi.exclamationmark"
+//                    ) {
+//                        Task {
+//                            await viewModel.loadMessages()
+//                        }
+//                    }
+//                case .loaded:
+//                    MainReceiverContentView(viewModel: viewModel)
+//            }
+        }
+        .alert(
+            "App Error",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { isPresented in
+                    if !isPresented { viewModel.errorMessage = nil }
+                }
+            )
+        ) {
+            Button("OK", role: .cancel ) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .task {
+            if viewModel.messages.isEmpty {
+                await viewModel.loadMessages()
+            }
+        }
+    }
+}
+
+#Preview("messages") {
+    MainReceiverView()
+}
+
+struct MainReceiverHeaderView: View {
+    @ObservedObject var viewModel: MainReceiverViewModel
     @State private var isChangingName: Bool = false
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 8) {
+            Label(viewModel.currentReceiverName, systemImage: "person")
+            Button {
+                isChangingName = true
+            } label: {
+                Text("Edit name")
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .buttonStyle(.bordered)
+            .sheet(isPresented: $isChangingName) {
+                NavigationStack {
+                    EditReceiverView(editedName: viewModel.currentReceiverName) { newName in
+                        viewModel.setCurrentReceiverName(newName)
+                        Task { await viewModel.loadMessages() }
+                    }
+                }
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct MainReceiverContentView: View {
+    @ObservedObject var viewModel: MainReceiverViewModel
+//    @State private var isChangingName: Bool = false
     @State private var shownMessage: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            VStack(alignment: .center, spacing: 8) {
-                Label(viewModel.currentReceiverName, systemImage: "person")
-                Button {
-                    isChangingName = true
-                } label: {
-                    Text("Edit name")
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .buttonStyle(.bordered)
-                .sheet(isPresented: $isChangingName) {
-                    NavigationStack {
-                        EditReceiverView(editedName: viewModel.currentReceiverName) { newName in
-                            viewModel.setCurrentReceiverName(newName)
-                            Task { await viewModel.loadMessages() }
-                        }
-                    }
-                }
-                .presentationDetents([.medium, .large])
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+
 
             Label("Latest message", systemImage: "star.fill")
                 .labelStyle(.titleOnly)
@@ -88,25 +151,7 @@ struct MainReceiverView: View {
             .tint(Color.accentColor)
         }
         .padding()
-        .alert(
-            "App Error",
-            isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { isPresented in
-                    if !isPresented { viewModel.errorMessage = nil }
-                }
-            )
-        ) {
-            Button("OK", role: .cancel ) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "")
-        }
-        .task {
-            await viewModel.loadMessages()
-        }
+
     }
 }
 
-#Preview("messages") {
-    MainReceiverView()
-}

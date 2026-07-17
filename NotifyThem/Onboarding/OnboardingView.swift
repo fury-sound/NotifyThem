@@ -24,7 +24,7 @@ struct OnboardingView: View {
             .animation(.easeInOut, value: currentPage)
 
             if !isLastPage {
-                Button("Пропустить") {
+                Button("Skip") {
                     complete()
                 }
                 .font(.body)
@@ -59,7 +59,7 @@ struct OnboardingView: View {
                 withAnimation { currentPage += 1 }
             }
         } label : {
-            Text(isLastPage ? "Начать работу" : "Далее")
+            Text(isLastPage ? "Start your journey" : "Next")
                 .font(.headline)
                 .frame(maxWidth: .infinity)
         }
